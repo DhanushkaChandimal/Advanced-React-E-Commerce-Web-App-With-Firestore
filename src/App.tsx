@@ -5,17 +5,35 @@ import AppNavbar from './components/NavBar'
 import ProductList from './components/ProductList'
 import Cart from './components/Cart'
 import HomePage from './components/HomePage'
+import { useEffect, useState } from 'react'
+import { onAuthStateChanged, type User } from 'firebase/auth'
+import { auth } from './lib/firebaseConfig'
+import Register from './components/Register'
 
-function App() {
+const App = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <Container className="py-4">
-      <AppNavbar/>
-      <Routes>
-        <Route path='/' element={<HomePage/>}/>
-        <Route path='/products' element={<ProductList/>}/>
-        <Route path='/cart' element={<Cart/>}/>
-      </Routes>
+      {user ? (
+        <div>
+          <AppNavbar/>
+          <Routes>
+            <Route path='/' element={<HomePage/>}/>
+            <Route path='/products' element={<ProductList/>}/>
+            <Route path='/cart' element={<Cart/>}/>
+          </Routes>
+        </div>
+      ) : (
+        <Register/>
+      )}
     </Container>
   )
 }
