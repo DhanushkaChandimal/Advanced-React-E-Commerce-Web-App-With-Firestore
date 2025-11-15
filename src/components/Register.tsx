@@ -28,6 +28,8 @@ const Register = () => {
         confirmPassword: ""
     });
     const [errors, setErrors] = useState<FormErrors>({});
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
     const validateForm = (): boolean => {
         const newErrors: FormErrors = {};
@@ -66,10 +68,7 @@ const Register = () => {
         }
 
         setErrors(newErrors);
-        for (const key in newErrors) {
-            return false;
-        }
-        return true;
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleInputChange = (field: keyof FormData, value: string) => {
@@ -158,30 +157,48 @@ const Register = () => {
 
                     <div className="mb-3">
                         <label className="form-label fw-semibold">Password</label>
-                        <input
-                            type={"password"}
-                            value={formData.password}
-                            onChange={(e) => handleInputChange('password', e.target.value)}
-                            className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                            placeholder="Enter your password"
-                        />
-                        {errors.password && (
-                            <div className="invalid-feedback d-block">{errors.password}</div>
-                        )}
+                        <div className="input-group">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                value={formData.password}
+                                onChange={(e) => handleInputChange('password', e.target.value)}
+                                className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                                placeholder="Enter your password"
+                            />
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? "👀" : "👁️‍🗨️"}
+                            </button>
+                            {errors.password && (
+                                <div className="invalid-feedback d-block">{errors.password}</div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="mb-3">
                         <label className="form-label fw-semibold">Confirm Password</label>
-                        <input
-                            type={"password"}
-                            value={formData.confirmPassword}
-                            onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                            className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
-                            placeholder="Confirm your password"
-                        />
-                        {errors.confirmPassword && (
-                            <div className="invalid-feedback d-block">{errors.confirmPassword}</div>
-                        )}
+                        <div className="input-group">
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                value={formData.confirmPassword}
+                                onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                                className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                                placeholder="Confirm your password"
+                            />
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? "👀" : "👁️‍🗨️"}
+                            </button>
+                            {errors.confirmPassword && (
+                                <div className="invalid-feedback d-block">{errors.confirmPassword}</div>
+                            )}
+                        </div>
                     </div>
 
                     {errors.general && (
