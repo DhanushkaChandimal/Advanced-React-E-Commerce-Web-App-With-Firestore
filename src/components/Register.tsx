@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../lib/firebaseConfig";
 
 interface FormData {
@@ -91,11 +91,15 @@ const Register = ({ onSwitchToSignIn }: RegisterProps) => {
         setIsLoading(true);
 
         try {
-            await createUserWithEmailAndPassword(
+            const userCredential = await createUserWithEmailAndPassword(
                 auth, 
                 formData.email, 
                 formData.password
             );
+
+            await updateProfile(userCredential.user, {
+                displayName: `${formData.firstName} ${formData.lastName}`
+            });
 
             setFormData({
                 firstName: "",
