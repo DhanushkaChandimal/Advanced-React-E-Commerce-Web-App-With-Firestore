@@ -10,6 +10,15 @@ interface FormData {
     confirmPassword: string;
 }
 
+interface FormErrors {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    general?: string;
+}
+
 const Register = () => {
     const [formData, setFormData] = useState<FormData>({
         firstName: "",
@@ -18,15 +27,63 @@ const Register = () => {
         password: "",
         confirmPassword: ""
     });
-    const [error, setError] = useState<string | null>(null);
+    const [errors, setErrors] = useState<FormErrors>({});
+
+    const validateForm = (): boolean => {
+        const newErrors: FormErrors = {};
+
+        // First name validation
+        if (!formData.firstName.trim()) {
+            newErrors.firstName = "First name is required";
+        } else if (formData.firstName.trim().length < 2) {
+            newErrors.firstName = "First name must be at least 2 characters";
+        }
+
+        // Last name validation
+        if (!formData.lastName.trim()) {
+            newErrors.lastName = "Last name is required";
+        } else if (formData.lastName.trim().length < 2) {
+            newErrors.lastName = "Last name must be at least 2 characters";
+        }
+
+        // Email validation
+        if (!formData.email.trim()) {
+            newErrors.email = "Email is required";
+        }
+
+        // Password validation
+        if (!formData.password) {
+            newErrors.password = "Password is required";
+        } else if (formData.password.length < 6) {
+            newErrors.password = "Password must be at least 6 characters";
+        }
+
+        // Confirm password validation
+        if (!formData.confirmPassword) {
+            newErrors.confirmPassword = "Please confirm your password";
+        } else if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = "Passwords do not match";
+        }
+
+        setErrors(newErrors);
+        for (const key in newErrors) {
+            return false;
+        }
+        return true;
+    };
 
     const handleInputChange = (field: keyof FormData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
-        console.log(formData);
     };
 
     const handleRegister = async (e: FormEvent) => {
         e.preventDefault();
+        setErrors({});
+
+        if (!validateForm()) {
+            return;
+        }
+
         try {
             await createUserWithEmailAndPassword(
                 auth, 
@@ -44,8 +101,7 @@ const Register = () => {
             alert("Registration successful!");
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
-            setError(errorMessage);
-            console.log(error);
+            setErrors({general: errorMessage});
         }
     };
 
@@ -63,8 +119,12 @@ const Register = () => {
                                 type="text"
                                 value={formData.firstName}
                                 onChange={(e) => handleInputChange('firstName', e.target.value)}
+                                className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
                                 placeholder="Enter your first name"
                             />
+                            {errors.firstName && (
+                                <div className="invalid-feedback">{errors.firstName}</div>
+                            )}
                         </div>
 
                         <div className="col-md-6">
@@ -73,8 +133,12 @@ const Register = () => {
                                 type="text"
                                 value={formData.lastName}
                                 onChange={(e) => handleInputChange('lastName', e.target.value)}
+                                className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
                                 placeholder="Enter your last name"
                             />
+                            {errors.lastName && (
+                                <div className="invalid-feedback">{errors.lastName}</div>
+                            )}
                         </div>
                     </div>
 
@@ -84,8 +148,12 @@ const Register = () => {
                             type="email"
                             value={formData.email}
                             onChange={(e) => handleInputChange('email', e.target.value)}
+                            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                             placeholder="Enter your email address"
                         />
+                        {errors.email && (
+                            <div className="invalid-feedback">{errors.email}</div>
+                        )}
                     </div>
 
                     <div className="mb-3">
@@ -94,8 +162,12 @@ const Register = () => {
                             type={"password"}
                             value={formData.password}
                             onChange={(e) => handleInputChange('password', e.target.value)}
+                            className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                             placeholder="Enter your password"
                         />
+                        {errors.password && (
+                            <div className="invalid-feedback d-block">{errors.password}</div>
+                        )}
                     </div>
 
                     <div className="mb-3">
@@ -104,9 +176,19 @@ const Register = () => {
                             type={"password"}
                             value={formData.confirmPassword}
                             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                            className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
                             placeholder="Confirm your password"
                         />
+                        {errors.confirmPassword && (
+                            <div className="invalid-feedback d-block">{errors.confirmPassword}</div>
+                        )}
                     </div>
+
+                    {errors.general && (
+                        <div className="alert alert-danger text-center" role="alert">
+                            {errors.general}
+                        </div>
+                    )}
 
                     <button 
                         type="submit" 
