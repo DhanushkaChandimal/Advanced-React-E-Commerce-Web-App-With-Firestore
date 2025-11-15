@@ -8,7 +8,7 @@ import HomePage from './components/HomePage'
 import { useEffect, useState } from 'react'
 import { onAuthStateChanged, type User } from 'firebase/auth'
 import { auth } from './lib/firebaseConfig'
-import Register from './components/Register'
+import SignIn from './components/SignIn'
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -32,7 +32,7 @@ const App = () => {
           </Routes>
         </div>
       ) : (
-        <Register/>
+        <SignIn/>
       )}
     </Container>
   )
