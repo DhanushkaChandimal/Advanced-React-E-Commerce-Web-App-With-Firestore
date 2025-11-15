@@ -19,7 +19,11 @@ interface FormErrors {
     general?: string;
 }
 
-const Register = () => {
+interface RegisterProps {
+    onSwitchToSignIn?: () => void;
+}
+
+const Register = ({ onSwitchToSignIn }: RegisterProps) => {
     const [formData, setFormData] = useState<FormData>({
         firstName: "",
         lastName: "",
@@ -229,7 +233,13 @@ const Register = () => {
                 </form>
 
                 <small className="text-muted text-center mt-4">
-                    Already have an account? <span role="button" className="text-primary text-decoration-underline">Sign in here</span>
+                    Already have an account? <span 
+                        role="button" 
+                        className="text-primary text-decoration-underline"
+                        onClick={onSwitchToSignIn}
+                    >
+                        Sign in here
+                    </span>
                 </small>
             </div>
         </div>

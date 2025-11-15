@@ -13,7 +13,11 @@ interface FormErrors {
     general?: string;
 }
 
-const SignIn = () => {
+interface SignInProps {
+    onSwitchToRegister?: () => void;
+}
+
+const SignIn = ({ onSwitchToRegister }: SignInProps) => {
     const [formData, setFormData] = useState<FormData>({
         email: "",
         password: ""
@@ -140,7 +144,13 @@ const SignIn = () => {
                 </form>
 
                 <small className="text-muted text-center mt-4">
-                    Don't have an account? <span role="button" className="text-primary text-decoration-underline">Create one here</span>
+                    Don't have an account? <span 
+                        role="button" 
+                        className="text-primary text-decoration-underline"
+                        onClick={onSwitchToRegister}
+                    >
+                        Create one here
+                    </span>
                 </small>
             </div>
         </div>

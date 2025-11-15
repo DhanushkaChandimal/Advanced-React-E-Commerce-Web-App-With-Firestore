@@ -9,9 +9,11 @@ import { useEffect, useState } from 'react'
 import { onAuthStateChanged, type User } from 'firebase/auth'
 import { auth } from './lib/firebaseConfig'
 import SignIn from './components/SignIn'
+import Register from './components/Register'
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [showSignIn, setShowSignIn] = useState<boolean>(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -32,7 +34,11 @@ const App = () => {
           </Routes>
         </div>
       ) : (
-        <SignIn/>
+        showSignIn ? (
+          <SignIn onSwitchToRegister={() => setShowSignIn(false)} />
+        ) : (
+          <Register onSwitchToSignIn={() => setShowSignIn(true)} />
+        )
       )}
     </Container>
   )
