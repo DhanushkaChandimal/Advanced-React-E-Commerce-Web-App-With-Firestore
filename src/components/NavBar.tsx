@@ -22,6 +22,11 @@ const AppNavbar = ({ user }: AppNavbarProps) => {
         }
     };
 
+    const getInitials = () => {
+        const name = user.displayName || 'User';
+        return name.substring(0, 2).toUpperCase();
+    };
+
     return (
         <div className='d-flex justify-content-between align-items-start w-100 position-relative'>
             <Navbar expand="lg" className="flex-grow-1">
@@ -45,9 +50,14 @@ const AppNavbar = ({ user }: AppNavbarProps) => {
                 </Nav.Link>
                 
                 <Dropdown align="end">
-                    <Dropdown.Toggle>DC</Dropdown.Toggle>
+                    <Dropdown.Toggle className="user-profile-dropdown p-0 border-0 d-flex align-items-center justify-content-center">
+                        {getInitials()}
+                    </Dropdown.Toggle>
                     
                     <Dropdown.Menu>
+                        <Dropdown.ItemText className="fw-bold">
+                            {user.displayName || 'User'}
+                        </Dropdown.ItemText>
                         <Dropdown.ItemText className="text-muted small">
                             {user.email}
                         </Dropdown.ItemText>
