@@ -1,17 +1,31 @@
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Dropdown from 'react-bootstrap/Dropdown';
 import '../styles/navbar.css';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../redux/store';
+import { signOut } from 'firebase/auth';
+import { auth } from '../lib/firebaseConfig';
 
 const AppNavbar = () => {
     const totalItems  = useSelector((state: RootState) => state.cart.totalItems);
 
+    const handleSignOut = async () => {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
+    };
+
     return (
-        <div className='navbar-container'>
-            <Navbar expand="lg" className="w-100">
-                <Navbar.Brand href="/">DC Shop Hub</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <div className='d-flex justify-content-between align-items-start w-100 position-relative'>
+            <Navbar expand="lg" className="flex-grow-1">
+                <div className="d-flex align-items-center">
+                    <Navbar.Toggle className='me-3' aria-controls="basic-navbar-nav" />
+                    <Navbar.Brand href="/">DC Shop Hub</Navbar.Brand>
+                </div>
+                
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="/">Home</Nav.Link>
@@ -19,10 +33,24 @@ const AppNavbar = () => {
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
-            <Nav.Link href="/cart" className='d-flex align-items-center ms-2 mt-1 bg-primary text-white rounded px-2'>
-                <img src="../cart-icon.png" alt="Cart" className='cart-icon'/>
-                Cart {totalItems}
-            </Nav.Link>
+            
+            <div className="d-flex align-items-center gap-3">
+                <Nav.Link href="/cart" className='d-flex align-items-center bg-primary text-white rounded px-2'>
+                    <img src="../cart-icon.png" alt="Cart" className='cart-icon'/>
+                    Cart {totalItems}
+                </Nav.Link>
+                
+                <Dropdown align="end">
+                    <Dropdown.Toggle>DC</Dropdown.Toggle>
+                    
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={handleSignOut} className="text-danger">
+                            <i className="bi bi-box-arrow-right me-2"></i>
+                            Sign Out
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </div>
         </div>
     );
 }

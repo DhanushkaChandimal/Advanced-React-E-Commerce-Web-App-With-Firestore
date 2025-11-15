@@ -2,13 +2,3 @@
     width: 30px;
     height: 30px;
 }
-
-.navbar-container {
-    display: flex;
-    align-items: flex-start;
-    padding: 0 1rem 0 0;
-}
-
-.navbar-collapse, .navbar-nav, .navbar-menu, .navbar-dropdown {
-    z-index: 100 !important;
-}
