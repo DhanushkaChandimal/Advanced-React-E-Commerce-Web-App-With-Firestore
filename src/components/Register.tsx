@@ -28,6 +28,7 @@ const Register = () => {
         confirmPassword: ""
     });
     const [errors, setErrors] = useState<FormErrors>({});
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
@@ -83,6 +84,8 @@ const Register = () => {
             return;
         }
 
+        setIsLoading(true);
+
         try {
             await createUserWithEmailAndPassword(
                 auth, 
@@ -101,6 +104,8 @@ const Register = () => {
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
             setErrors({general: errorMessage});
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -209,9 +214,17 @@ const Register = () => {
 
                     <button 
                         type="submit" 
+                        disabled={isLoading}
                         className={`btn btn-primary btn-lg w-100 mt-4`}
                     >
-                        Create Account
+                        {isLoading ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Creating Account...
+                            </>
+                        ) : (
+                            'Create Account'
+                        )}
                     </button>
                 </form>
 
