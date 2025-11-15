@@ -110,10 +110,10 @@ const Register = () => {
     };
 
     return (
-        <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="d-flex justify-content-center align-items-center vh-100 bg-light p-4">
             <div className="card border-0 shadow-lg p-5">
-                <h2 className="h3 fw-bold text-center">Create Account</h2>
-                <p className="text-muted text-center">Join us and start shopping today!</p>
+                <h2 className="h3 fw-bold text-center mb-2">Create Account</h2>
+                <p className="text-muted text-center mb-4">Join us and start shopping today!</p>
 
                 <form onSubmit={handleRegister}>
                     <div className="row mb-3">
