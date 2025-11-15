@@ -4,10 +4,14 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import '../styles/navbar.css';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../redux/store';
-import { signOut } from 'firebase/auth';
+import { signOut, type User } from 'firebase/auth';
 import { auth } from '../lib/firebaseConfig';
 
-const AppNavbar = () => {
+interface AppNavbarProps {
+    user: User;
+}
+
+const AppNavbar = ({ user }: AppNavbarProps) => {
     const totalItems  = useSelector((state: RootState) => state.cart.totalItems);
 
     const handleSignOut = async () => {
@@ -25,7 +29,7 @@ const AppNavbar = () => {
                     <Navbar.Toggle className='me-3' aria-controls="basic-navbar-nav" />
                     <Navbar.Brand href="/">DC Shop Hub</Navbar.Brand>
                 </div>
-                
+
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="/">Home</Nav.Link>
@@ -44,6 +48,10 @@ const AppNavbar = () => {
                     <Dropdown.Toggle>DC</Dropdown.Toggle>
                     
                     <Dropdown.Menu>
+                        <Dropdown.ItemText className="text-muted small">
+                            {user.email}
+                        </Dropdown.ItemText>
+                        <Dropdown.Divider />
                         <Dropdown.Item onClick={handleSignOut} className="text-danger">
                             <i className="bi bi-box-arrow-right me-2"></i>
                             Sign Out

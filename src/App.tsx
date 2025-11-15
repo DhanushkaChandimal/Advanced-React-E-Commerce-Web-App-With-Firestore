@@ -26,7 +26,7 @@ const App = () => {
     <Container className="py-4">
       {user ? (
         <div>
-          <AppNavbar/>
+          <AppNavbar user={user}/>
           <Routes>
             <Route path='/' element={<HomePage/>}/>
             <Route path='/products' element={<ProductList/>}/>
