@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useCategories } from "../hooks/useProducts";
 
 interface FormData {
     title: string;
@@ -21,6 +22,7 @@ const CreateProduct = () => {
         rate: "",
         count: ""
     });
+    const { data: categories, isLoading: categoriesLoading } = useCategories();
 
     const handleInputChange = (field: keyof FormData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -64,8 +66,14 @@ const CreateProduct = () => {
                                 value={formData.category}
                                 onChange={(e) => handleInputChange('category', e.target.value)}
                                 className={"form-control"}
+                                disabled={categoriesLoading}
                             >
                                 <option value="">Select a category</option>
+                                {categories?.map((category) => (
+                                    <option key={category} value={category}>
+                                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                     </div>
