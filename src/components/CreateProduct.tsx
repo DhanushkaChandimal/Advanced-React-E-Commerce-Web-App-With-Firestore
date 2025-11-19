@@ -22,6 +22,10 @@ const CreateProduct = () => {
         count: ""
     });
 
+    const handleInputChange = (field: keyof FormData, value: string) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
     return (
         <div className="d-flex justify-content-center align-items-center min-vh-100">
             <div className="card border-0 shadow-lg p-5">
@@ -34,6 +38,7 @@ const CreateProduct = () => {
                         <input
                             type="text"
                             value={formData.title}
+                            onChange={(e) => handleInputChange('title', e.target.value)}
                             className={"form-control"}
                             placeholder="Enter product title"
                         />
@@ -47,6 +52,7 @@ const CreateProduct = () => {
                                 step="0.01"
                                 min="0"
                                 value={formData.price}
+                                onChange={(e) => handleInputChange('price', e.target.value)}
                                 className={"form-control"}
                                 placeholder="0.00"
                             />
@@ -56,6 +62,7 @@ const CreateProduct = () => {
                             <label className="form-label fw-semibold">Category</label>
                             <select
                                 value={formData.category}
+                                onChange={(e) => handleInputChange('category', e.target.value)}
                                 className={"form-control"}
                             >
                                 <option value="">Select a category</option>
@@ -67,6 +74,7 @@ const CreateProduct = () => {
                         <label className="form-label fw-semibold">Description</label>
                         <textarea
                             value={formData.description}
+                            onChange={(e) => handleInputChange('description', e.target.value)}
                             className={"form-control"}
                             rows={4}
                             placeholder="Enter product description"
@@ -78,6 +86,7 @@ const CreateProduct = () => {
                         <input
                             type="url"
                             value={formData.image}
+                            onChange={(e) => handleInputChange('image', e.target.value)}
                             className={"form-control"}
                             placeholder="https://example.com/image.jpg"
                         />
@@ -92,6 +101,7 @@ const CreateProduct = () => {
                                 min="0"
                                 max="5"
                                 value={formData.rate}
+                                onChange={(e) => handleInputChange('rate', e.target.value)}
                                 className={"form-control"}
                             />
                         </div>
@@ -102,6 +112,7 @@ const CreateProduct = () => {
                                 type="number"
                                 min="0"
                                 value={formData.count}
+                                onChange={(e) => handleInputChange('count', e.target.value)}
                                 className={"form-control"}
                             />
                         </div>
