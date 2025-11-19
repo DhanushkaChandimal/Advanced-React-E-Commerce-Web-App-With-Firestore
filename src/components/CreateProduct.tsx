@@ -1,5 +1,26 @@
+import { useState } from "react";
+
+interface FormData {
+    title: string;
+    price: string;
+    description: string;
+    category: string;
+    image: string;
+    rate: string;
+    count: string;
+}
 
 const CreateProduct = () => {
+
+    const [formData, setFormData] = useState<FormData>({
+        title: "",
+        price: "",
+        description: "",
+        category: "",
+        image: "",
+        rate: "",
+        count: ""
+    });
 
     return (
         <div className="d-flex justify-content-center align-items-center min-vh-100">
@@ -12,6 +33,7 @@ const CreateProduct = () => {
                         <label className="form-label fw-semibold">Product Title</label>
                         <input
                             type="text"
+                            value={formData.title}
                             className={"form-control"}
                             placeholder="Enter product title"
                         />
@@ -22,13 +44,18 @@ const CreateProduct = () => {
                             <label className="form-label fw-semibold">Price ($)</label>
                             <input
                                 type="number"
+                                step="0.01"
+                                min="0"
+                                value={formData.price}
                                 className={"form-control"}
+                                placeholder="0.00"
                             />
                         </div>
 
                         <div className="col-md-6">
                             <label className="form-label fw-semibold">Category</label>
                             <select
+                                value={formData.category}
                                 className={"form-control"}
                             >
                                 <option value="">Select a category</option>
@@ -39,6 +66,7 @@ const CreateProduct = () => {
                     <div className="mb-3">
                         <label className="form-label fw-semibold">Description</label>
                         <textarea
+                            value={formData.description}
                             className={"form-control"}
                             rows={4}
                             placeholder="Enter product description"
@@ -49,6 +77,7 @@ const CreateProduct = () => {
                         <label className="form-label fw-semibold">Image URL</label>
                         <input
                             type="url"
+                            value={formData.image}
                             className={"form-control"}
                             placeholder="https://example.com/image.jpg"
                         />
@@ -59,6 +88,10 @@ const CreateProduct = () => {
                             <label className="form-label fw-semibold">Rating (0-5)</label>
                             <input
                                 type="number"
+                                step="0.1"
+                                min="0"
+                                max="5"
+                                value={formData.rate}
                                 className={"form-control"}
                             />
                         </div>
@@ -67,6 +100,8 @@ const CreateProduct = () => {
                             <label className="form-label fw-semibold">Rating Count</label>
                             <input
                                 type="number"
+                                min="0"
+                                value={formData.count}
                                 className={"form-control"}
                             />
                         </div>
