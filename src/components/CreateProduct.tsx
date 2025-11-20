@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCategories } from "../hooks/useProducts";
+import "../styles/create-product.css"
 
 interface FormData {
     title: string;
@@ -23,6 +24,15 @@ const CreateProduct = () => {
         count: ""
     });
     const { data: categories, isLoading: categoriesLoading } = useCategories();
+
+    const isValidUrl = (string: string): boolean => {
+        try {
+            new URL(string);
+            return true;
+        } catch {
+            return false;
+        }
+    };
 
     const handleInputChange = (field: keyof FormData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -98,6 +108,18 @@ const CreateProduct = () => {
                             className={"form-control"}
                             placeholder="https://example.com/image.jpg"
                         />
+                        {formData.image && isValidUrl(formData.image) && (
+                            <div className="mt-2">
+                                <small>Preview:</small>
+                                <div className="mt-1">
+                                    <img 
+                                        src={formData.image} 
+                                        alt="Preview" 
+                                        className="img-thumbnail image-preview"
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="row mb-3">
