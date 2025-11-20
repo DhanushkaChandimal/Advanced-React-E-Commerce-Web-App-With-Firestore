@@ -34,8 +34,7 @@ export const productService = {
                 ...productData
             };
 
-            const createdProd = await addDoc(collection(db, PRODUCTS_COLLECTION), newProduct);
-            console.log('Product created with ID: ', createdProd.id);
+            await addDoc(collection(db, PRODUCTS_COLLECTION), newProduct);
             
             return newProduct;
         } catch (error) {

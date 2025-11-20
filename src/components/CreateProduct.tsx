@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from "react";
-import { useCategories } from "../hooks/useProducts";
+import { useCategories, useCreateProduct } from "../hooks/useProducts";
 import type { Item } from "../types/types";
 import "../styles/create-product.css"
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../lib/firebaseConfig";
+
+type CreateProductData = Omit<Item, 'id'>;
 
 interface FormData {
     title: string;
@@ -39,6 +39,7 @@ const CreateProduct = () => {
     });
     const [errors, setErrors] = useState<FormErrors>({});
     
+    const { mutate: createProduct } = useCreateProduct();
     const { data: categories, isLoading: categoriesLoading } = useCategories();
 
     const validateForm = (): boolean => {
@@ -109,8 +110,7 @@ const CreateProduct = () => {
         }
 
         try {
-            const productData: Item = {
-                id:1,
+            const productData: CreateProductData = {
                 title: formData.title.trim(),
                 price: Number(formData.price),
                 description: formData.description.trim(),
@@ -121,18 +121,21 @@ const CreateProduct = () => {
                     count: Number(formData.count)
                 }
             };
-            await addDoc(collection(db, 'products'), productData);
-            alert('Data added!');
-            setFormData({
-                title: "",
-                price: "",
-                description: "",
-                category: "",
-                image: "",
-                rate: "",
-                count: ""
-            });
 
+            createProduct(productData, {
+                onSuccess: () => {
+                    alert('Data added!');
+                    setFormData({
+                        title: "",
+                        price: "",
+                        description: "",
+                        category: "",
+                        image: "",
+                        rate: "",
+                        count: ""
+                    });
+                }
+            });
         } catch (error) {
             console.error('Error creating product:', error);
             setErrors({ general: "An unexpected error occurred. Please try again." });

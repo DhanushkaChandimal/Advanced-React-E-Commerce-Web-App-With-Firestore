@@ -1,6 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { productService } from '../services/productService';
 import type { Item } from '../types/types';
+
+type CreateProductData = Omit<Item, 'id'>;
 
 export const useProducts = () => {
     return useQuery<Item[]>({
@@ -21,5 +23,16 @@ export const useCategory = (category: string) => {
         queryKey: ['category', category],
         queryFn: () => productService.getProductsByCategory(category),
         enabled: !!category
+    });
+};
+
+export const useCreateProduct = () => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (productData: CreateProductData) => productService.createProduct(productData),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['items'] });
+        }
     });
 };
