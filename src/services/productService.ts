@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebaseConfig';
 import type { Item } from '../types/types';
 
@@ -10,8 +10,12 @@ type CreateProductData = Omit<Item, 'id'>;
 
 export const productService = {
     getAllProducts: async (): Promise<Item[]> => {
-        const response = await axios.get<Item[]>(`${API_BASE_URL}/products`);
-        return response.data;
+        const querySnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
+        const productList = querySnapshot.docs.map(doc => ({
+            id: doc.data().id || doc.id,
+            ...doc.data()
+        })) as Item[];
+        return productList;
     },
 
     getAllCategories: async (): Promise<string[]> => {
@@ -25,21 +29,16 @@ export const productService = {
     },
 
     createProduct: async (productData: CreateProductData): Promise<Item> => {
-        try {
-            const allProducts = await productService.getAllProducts();
-            const newId = Math.max(...allProducts.map(p => p.id), 0) + 1;
-            
-            const newProduct: Item = {
-                id: newId,
-                ...productData
-            };
+        const allProducts = await productService.getAllProducts();
+        const newId = Math.max(...allProducts.map(p => p.id), 0) + 1;
+        
+        const newProduct: Item = {
+            id: newId,
+            ...productData
+        };
 
-            await addDoc(collection(db, PRODUCTS_COLLECTION), newProduct);
-            
-            return newProduct;
-        } catch (error) {
-            console.error('Error creating product:', error);
-            throw new Error('Failed to create product');
-        }
+        await addDoc(collection(db, PRODUCTS_COLLECTION), newProduct);
+        
+        return newProduct;
     },
 };
