@@ -10,3 +10,9 @@ export interface Item {
    };
    image: string;
 }
+
+export interface AuthUser {
+   id: number;
+   firstName: string;
+   lastName: string;
+}
