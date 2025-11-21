@@ -142,6 +142,19 @@ const CreateProduct = () => {
         }
     };
 
+    const resetForm = () => {
+        setFormData({
+            title: "",
+            price: "",
+            description: "",
+            category: "",
+            image: "",
+            rate: "",
+            count: ""
+        });
+        setErrors({});
+    };
+
     return (
         <div className="d-flex justify-content-center align-items-center min-vh-100">
             <div className="card border-0 shadow-lg p-5">
@@ -290,6 +303,7 @@ const CreateProduct = () => {
                         <button 
                             type="button"
                             className="btn btn-outline-secondary"
+                            onClick={resetForm}
                         >
                             Reset Form
                         </button>
