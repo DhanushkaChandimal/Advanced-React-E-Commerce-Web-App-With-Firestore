@@ -1,9 +1,7 @@
-import axios from 'axios';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../lib/firebaseConfig';
 import type { Item } from '../types/types';
 
-const API_BASE_URL = 'https://fakestoreapi.com';
 const PRODUCTS_COLLECTION = 'products';
 const CATEGORIES_COLLECTION = 'categories';
 
@@ -26,8 +24,13 @@ export const productService = {
     },
 
     getProductsByCategory: async (category: string): Promise<Item[]> => {
-        const response = await axios.get<Item[]>(`${API_BASE_URL}/products/category/${category}`);
-        return response.data;
+        const q = query(collection(db, PRODUCTS_COLLECTION), where("category", "==", category));
+        const querySnapshot = await getDocs(q);
+        const productList = querySnapshot.docs.map(doc => ({
+            id: doc.data().id || doc.id,
+            ...doc.data()
+        })) as Item[];
+        return productList;
     },
 
     createProduct: async (productData: CreateProductData): Promise<Item> => {
