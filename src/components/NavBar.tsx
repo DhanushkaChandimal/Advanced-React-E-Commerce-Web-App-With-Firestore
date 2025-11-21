@@ -63,8 +63,11 @@ const AppNavbar = ({ user }: AppNavbarProps) => {
                             {user.email}
                         </Dropdown.ItemText>
                         <Dropdown.Divider />
+                        <Dropdown.Item href="/profile">
+                            User Profile
+                        </Dropdown.Item>
+                        <Dropdown.Divider />
                         <Dropdown.Item onClick={handleSignOut} className="text-danger">
-                            <i className="bi bi-box-arrow-right me-2"></i>
                             Sign Out
                         </Dropdown.Item>
                     </Dropdown.Menu>

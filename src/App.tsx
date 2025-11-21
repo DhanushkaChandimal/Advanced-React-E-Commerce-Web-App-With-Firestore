@@ -11,6 +11,7 @@ import { onAuthStateChanged, type User } from 'firebase/auth'
 import { auth } from './lib/firebaseConfig'
 import SignIn from './components/SignIn'
 import Register from './components/Register'
+import UserProfile from './components/UserProfile'
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -33,6 +34,7 @@ const App = () => {
             <Route path='/products' element={<ProductList/>}/>
             <Route path='/cart' element={<Cart/>}/>
             <Route path='/create-product' element={<CreateProduct/>}/>
+            <Route path='/profile' element={<UserProfile/>}/>
           </Routes>
         </div>
       ) : (
