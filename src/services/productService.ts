@@ -5,6 +5,7 @@ import type { Item } from '../types/types';
 
 const API_BASE_URL = 'https://fakestoreapi.com';
 const PRODUCTS_COLLECTION = 'products';
+const CATEGORIES_COLLECTION = 'categories';
 
 type CreateProductData = Omit<Item, 'id'>;
 
@@ -19,8 +20,9 @@ export const productService = {
     },
 
     getAllCategories: async (): Promise<string[]> => {
-        const response = await axios.get<string[]>(`${API_BASE_URL}/products/categories`);
-        return response.data;
+        const querySnapshot = await getDocs(collection(db, CATEGORIES_COLLECTION));
+        const categoryList = querySnapshot.docs.map(doc => doc.id);
+        return categoryList;
     },
 
     getProductsByCategory: async (category: string): Promise<Item[]> => {
