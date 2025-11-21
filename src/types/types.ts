@@ -16,3 +16,8 @@ export interface AuthUser {
    firstName: string;
    lastName: string;
 }
+
+export interface FirestoreConfig {
+   maxProductId: number;
+   maxUserId: number;
+}
