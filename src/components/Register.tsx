@@ -1,6 +1,10 @@
 import { useState, type FormEvent } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../lib/firebaseConfig";
+import type { AuthUser } from "../types/types";
+import { useCreateUser } from "../hooks/useAuth";
+
+type CreateUserData = Omit<AuthUser, 'id'>;
 
 interface FormData {
     firstName: string;
@@ -35,6 +39,8 @@ const Register = ({ onSwitchToSignIn }: RegisterProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+
+    const { mutate: createUser } = useCreateUser();
 
     const validateForm = (): boolean => {
         const newErrors: FormErrors = {};
@@ -91,6 +97,13 @@ const Register = ({ onSwitchToSignIn }: RegisterProps) => {
         setIsLoading(true);
 
         try {
+            const userData: CreateUserData = {
+                firstName: formData.firstName.trim(),
+                lastName: formData.lastName.trim(),
+            };
+
+            createUser(userData);
+
             const userCredential = await createUserWithEmailAndPassword(
                 auth, 
                 formData.email, 
