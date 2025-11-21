@@ -39,7 +39,7 @@ const CreateProduct = () => {
     });
     const [errors, setErrors] = useState<FormErrors>({});
     
-    const { mutate: createProduct } = useCreateProduct();
+    const { mutate: createProduct, isPending } = useCreateProduct();
     const { data: categories, isLoading: categoriesLoading } = useCategories();
 
     const validateForm = (): boolean => {
@@ -295,14 +295,23 @@ const CreateProduct = () => {
                     <div className="d-grid gap-2 mt-4">
                         <button 
                             type="submit" 
+                            disabled={isPending}
                             className={"btn btn-primary btn-lg"}
                         >
-                            Create Product
+                            {isPending ? (
+                                <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Creating Product...
+                                </>
+                            ) : (
+                                'Create Product'
+                            )}
                         </button>
                         
                         <button 
                             type="button"
                             className="btn btn-outline-secondary"
+                            disabled={isPending}
                             onClick={resetForm}
                         >
                             Reset Form
