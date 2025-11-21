@@ -1,6 +1,7 @@
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../lib/firebaseConfig';
 import type { Item } from '../types/types';
+import { settingService } from './settingService';
 
 const PRODUCTS_COLLECTION = 'products';
 const CATEGORIES_COLLECTION = 'categories';
@@ -34,8 +35,8 @@ export const productService = {
     },
 
     createProduct: async (productData: CreateProductData): Promise<Item> => {
-        const allProducts = await productService.getAllProducts();
-        const newId = Math.max(...allProducts.map(p => p.id), 0) + 1;
+        const firestoreConfig = await settingService.getConfigs();
+        const newId = firestoreConfig.maxProductId + 1;
         
         const newProduct: Item = {
             id: newId,
@@ -43,6 +44,11 @@ export const productService = {
         };
 
         await addDoc(collection(db, PRODUCTS_COLLECTION), newProduct);
+
+        await settingService.updateConfigs({
+            maxProductId: newId,
+            maxUserId: firestoreConfig.maxUserId,
+        });
         
         return newProduct;
     },
