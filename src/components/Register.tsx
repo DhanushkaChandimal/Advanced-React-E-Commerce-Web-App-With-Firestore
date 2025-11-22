@@ -4,8 +4,6 @@ import { auth } from "../lib/firebaseConfig";
 import type { AuthUser } from "../types/types";
 import { useCreateUser } from "../hooks/useAuth";
 
-type CreateUserData = Omit<AuthUser, 'id'>;
-
 interface FormData {
     firstName: string;
     lastName: string;
@@ -97,7 +95,8 @@ const Register = ({ onSwitchToSignIn }: RegisterProps) => {
         setIsLoading(true);
 
         try {
-            const userData: CreateUserData = {
+            const userData: AuthUser = {
+                id: formData.email.trim(),
                 firstName: formData.firstName.trim(),
                 lastName: formData.lastName.trim(),
             };

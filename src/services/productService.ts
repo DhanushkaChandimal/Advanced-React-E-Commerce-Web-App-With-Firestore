@@ -47,7 +47,6 @@ export const productService = {
 
         await settingService.updateConfigs({
             maxProductId: newId,
-            maxUserId: firestoreConfig.maxUserId,
         });
         
         return newProduct;

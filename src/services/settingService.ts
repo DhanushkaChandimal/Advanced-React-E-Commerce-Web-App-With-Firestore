@@ -16,7 +16,6 @@ export const settingService = {
         const docRef = doc(db, SETTINGS, CONFIG);
         await updateDoc(docRef, {
             maxProductId: configData.maxProductId,
-            maxUserId: configData.maxUserId
         });
         return true;
     },

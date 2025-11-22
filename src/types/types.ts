@@ -12,12 +12,11 @@ export interface Item {
 }
 
 export interface AuthUser {
-   id: number;
+   id: string;
    firstName: string;
    lastName: string;
 }
 
 export interface FirestoreConfig {
    maxProductId: number;
-   maxUserId: number;
 }
