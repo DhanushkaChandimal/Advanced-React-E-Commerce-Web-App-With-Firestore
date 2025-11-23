@@ -1,6 +1,6 @@
 import { useState, type FormEvent, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCategories, useCreateProduct, useUpdateProduct, useProducts } from "../hooks/useProducts";
+import { useCategories, useCreateProduct, useUpdateProduct, useProducts, useDeleteProduct } from "../hooks/useProducts";
 import type { Item } from "../types/types";
 import "../styles/create-product.css"
 
@@ -48,6 +48,7 @@ const CreateOrEditProduct = () => {
     
     const { mutate: createProduct, isPending: isCreating } = useCreateProduct();
     const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct();
+    const { mutate: deleteProduct } = useDeleteProduct();
     const { data: categories, isLoading: categoriesLoading } = useCategories();
     
     const isPending = isCreating || isUpdating;
@@ -199,6 +200,21 @@ const CreateOrEditProduct = () => {
             count: ""
         });
         setErrors({});
+    };
+
+    const handleDelete = () => {
+        if (product) {
+            deleteProduct(product.id, {
+                onSuccess: () => {
+                    alert('Product deleted successfully!');
+                    navigate('/products');
+                },
+                onError: (error) => {
+                    console.error('Error deleting product:', error);
+                    alert('Failed to delete product. Please try again.');
+                }
+            });
+        }
     };
 
     return (
@@ -362,6 +378,16 @@ const CreateOrEditProduct = () => {
                         >
                             Reset Form
                         </button>
+
+                        {isEditMode && (
+                            <button 
+                                type="button"
+                                className="btn btn-danger"
+                                onClick={() => handleDelete()}
+                            >
+                                Delete Product
+                            </button>
+                        )}
                     </div>
                 </form>
             </div>

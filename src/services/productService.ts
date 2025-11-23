@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../lib/firebaseConfig';
 import type { Item } from '../types/types';
 import { settingService } from './settingService';
@@ -64,4 +64,17 @@ export const productService = {
         
         return productData;
     },
+
+    deleteProduct: async (id: number): Promise<boolean> => {
+        const querySnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
+        const productDoc = querySnapshot.docs.find(doc => doc.data().id === id);
+        
+        if (!productDoc) {
+            throw new Error('Product not found');
+        }
+
+        await deleteDoc(doc(db, PRODUCTS_COLLECTION, productDoc.id));
+
+        return true;
+    }
 };
