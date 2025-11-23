@@ -20,3 +20,15 @@ export const useCreateUser = () => {
         }
     });
 };
+
+export const useDeleteUser = () => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (userId: string) => authService.deleteUser(userId),
+        onSuccess: (userId) => {
+            queryClient.removeQueries({ queryKey: ['user', userId] });
+            queryClient.invalidateQueries({ queryKey: ['user'] });
+        }
+    });
+};
