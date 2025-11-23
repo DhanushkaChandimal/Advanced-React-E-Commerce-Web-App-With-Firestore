@@ -1,5 +1,5 @@
 import { useDeleteUser, useUser } from '../hooks/useAuth';
-import { type User } from 'firebase/auth';
+import { type User, deleteUser } from 'firebase/auth';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -18,7 +18,10 @@ const UserProfile = ({ user }: AppProps) => {
         if (window.confirm('Are you sure you want to delete your profile? This action cannot be undone.')) {
             try {
                 await deleteUserMutation.mutateAsync(user.email || '');
-                alert('Profile deleted successfully!');
+                
+                await deleteUser(user);
+                
+                alert('Profile deleted successfully! You will be signed out.');
             } catch (error) {
                 console.error('Error deleting profile:', error);
                 alert('Error deleting profile. Please try again.');
