@@ -1,8 +1,10 @@
-import { useDeleteUser, useUser } from '../hooks/useAuth';
+import { useDeleteUser, useUser, useUpdateUser } from '../hooks/useAuth';
 import { type User, deleteUser } from 'firebase/auth';
+import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
@@ -13,6 +15,48 @@ interface AppProps {
 const UserProfile = ({ user }: AppProps) => {
     const { data: currentUser } = useUser(user.email || '');
     const deleteUserMutation = useDeleteUser();
+    const updateUserMutation = useUpdateUser();
+    
+    const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: ''
+    });
+
+    const handleEditClick = () => {
+        if (currentUser) {
+            setFormData({
+                firstName: currentUser.firstName,
+                lastName: currentUser.lastName
+            });
+            setIsEditing(true);
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+        setFormData({ firstName: '', lastName: '' });
+    };
+
+    const handleUpdateProfile = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!currentUser) return;
+        
+        try {
+            await updateUserMutation.mutateAsync({
+                ...currentUser,
+                firstName: formData.firstName,
+                lastName: formData.lastName
+            });
+            
+            setIsEditing(false);
+            alert('Profile updated successfully!');
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            alert('Error updating profile. Please try again.');
+        }
+    };
 
     const handleDeleteProfile = async () => {
         if (window.confirm('Are you sure you want to delete your profile? This action cannot be undone.')) {
@@ -44,20 +88,76 @@ const UserProfile = ({ user }: AppProps) => {
                                 <Card.Body>
                                     <h5>Account Information</h5>
                                     <p><strong>Email:</strong> {user.email}</p>
-                                    <p><strong>First Name:</strong> {currentUser?.firstName}</p>
-                                    <p><strong>Last Name:</strong> {currentUser?.lastName}</p>
+                                    
+                                    {isEditing ? (
+                                        <Form onSubmit={handleUpdateProfile}>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>First Name</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    value={formData.firstName}
+                                                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                                                    required
+                                                    placeholder="Enter first name"
+                                                />
+                                            </Form.Group>
+                                            
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Last Name</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    value={formData.lastName}
+                                                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                                    required
+                                                    placeholder="Enter last name"
+                                                />
+                                            </Form.Group>
+                                            
+                                            <div className="d-flex gap-2">
+                                                <Button 
+                                                    type="submit" 
+                                                    variant="primary"
+                                                >
+                                                    Save Changes
+                                                </Button>
+                                                <Button 
+                                                    type="button" 
+                                                    variant="secondary"
+                                                    onClick={handleCancelEdit}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </div>
+                                        </Form>
+                                    ) : (
+                                        <div>
+                                            <p><strong>First Name:</strong> {currentUser?.firstName}</p>
+                                            <p><strong>Last Name:</strong> {currentUser?.lastName}</p>
+                                        </div>
+                                    )}
                                 </Card.Body>
                             </Card>
                             
-                            <div className="d-grid gap-2">
-                                <Button 
-                                    variant="danger" 
-                                    size="lg"
-                                    onClick={handleDeleteProfile}
-                                >
-                                    Delete Profile
-                                </Button>
-                            </div>
+                            {!isEditing && (
+                                <div className="d-grid gap-2">
+                                    <Button 
+                                        variant="warning"
+                                        size="lg"
+                                        onClick={handleEditClick}
+                                        disabled={!currentUser}
+                                    >
+                                        Edit Profile
+                                    </Button>
+
+                                    <Button 
+                                        variant="danger" 
+                                        size="lg"
+                                        onClick={handleDeleteProfile}
+                                    >
+                                        Delete Profile
+                                    </Button>
+                                </div>
+                            )}
                         </Card.Body>
                     </Card>
                 </Col>

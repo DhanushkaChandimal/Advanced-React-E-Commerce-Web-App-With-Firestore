@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import type { AuthUser } from "../types/types";
 import { db } from "../lib/firebaseConfig";
 
@@ -15,6 +15,15 @@ export const authService = {
     createUser: async (userData: AuthUser): Promise<AuthUser> => {
         await addDoc(collection(db, USER_COLLECTION), userData);
         return userData;
+    },
+
+    updateUser: async (updateData: AuthUser): Promise<boolean> => {
+        const q = query(collection(db, USER_COLLECTION), where("id", "==", updateData.id));
+        const querySnapshot = await getDocs(q);
+        const userDocRef = querySnapshot.docs[0].ref;
+        await updateDoc(userDocRef, {...updateData});
+        
+        return true;
     },
 
     deleteUser: async (userId: string): Promise<boolean> => {
