@@ -36,3 +36,14 @@ export const useCreateProduct = () => {
         }
     });
 };
+
+export const useUpdateProduct = () => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (productData: Item) => productService.updateProduct(productData),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['items'] });
+        }
+    });
+};

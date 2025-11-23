@@ -5,7 +5,7 @@ import AppNavbar from './components/NavBar'
 import ProductList from './components/ProductList'
 import Cart from './components/Cart'
 import HomePage from './components/HomePage'
-import CreateProduct from './components/CreateProduct'
+import CreateOrEditProduct from './components/CreateOrEditProduct'
 import { useEffect, useState } from 'react'
 import { onAuthStateChanged, type User } from 'firebase/auth'
 import { auth } from './lib/firebaseConfig'
@@ -33,7 +33,8 @@ const App = () => {
             <Route path='/' element={<HomePage/>}/>
             <Route path='/products' element={<ProductList/>}/>
             <Route path='/cart' element={<Cart/>}/>
-            <Route path='/create-product' element={<CreateProduct/>}/>
+            <Route path='/create-product' element={<CreateOrEditProduct/>}/>
+            <Route path='/edit-product/:id' element={<CreateOrEditProduct />}/>
             <Route path='/profile' element={<UserProfile user={user}/>}/>
           </Routes>
         </div>

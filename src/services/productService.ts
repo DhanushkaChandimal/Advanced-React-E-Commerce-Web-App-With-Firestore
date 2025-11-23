@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebaseConfig';
 import type { Item } from '../types/types';
 import { settingService } from './settingService';
@@ -50,5 +50,18 @@ export const productService = {
         });
         
         return newProduct;
+    },
+
+    updateProduct: async (productData: Item): Promise<Item> => {
+        const querySnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
+        const productDoc = querySnapshot.docs.find(doc => doc.data().id === productData.id);
+
+        if (!productDoc) {
+            throw new Error('Product not found');
+        }
+
+        await updateDoc(doc(db, PRODUCTS_COLLECTION, productDoc.id), { ...productData });
+        
+        return productData;
     },
 };

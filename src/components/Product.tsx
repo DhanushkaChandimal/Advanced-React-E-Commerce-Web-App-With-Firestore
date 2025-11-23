@@ -1,5 +1,6 @@
 import type React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Item } from "../types/types";
 import "../styles/product.css";
 import Card from "react-bootstrap/Card";
@@ -11,11 +12,16 @@ import { addToCart } from "../redux/cartSlice";
 const Product: React.FC<Item> = (itemDetails: Item) => {
     const [imageError, setImageError] = useState(false);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const placeholderImage = 'https://placehold.co/250x170';
 
+    const handleProductClick = () => {
+        navigate(`/edit-product/${itemDetails.id}`);
+    };
+
     return (
-        <Card className="h-100 shadow-sm product-card">
+        <Card className="h-100 shadow-sm product-card" onClick={handleProductClick}>
             <div className="product-image-container">
                 <Card.Img 
                     variant="top" 
@@ -57,7 +63,10 @@ const Product: React.FC<Item> = (itemDetails: Item) => {
                         variant="primary"
                         size="sm"
                         className="add-to-cart-btn"
-                        onClick={() =>dispatch(addToCart(itemDetails))}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            dispatch(addToCart(itemDetails));
+                        }}
                     >
                         Add to Cart
                     </Button>

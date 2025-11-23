@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from "react";
-import { useCategories, useCreateProduct } from "../hooks/useProducts";
+import { useState, type FormEvent, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useCategories, useCreateProduct, useUpdateProduct, useProducts } from "../hooks/useProducts";
 import type { Item } from "../types/types";
 import "../styles/create-product.css"
 
@@ -26,7 +27,13 @@ interface FormErrors {
     general?: string;
 }
 
-const CreateProduct = () => {
+const CreateOrEditProduct = () => {
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const { data: products } = useProducts();
+    
+    const product = id ? products?.find(p => p.id === Number(id)) : undefined;
+    const isEditMode = !!product;
 
     const [formData, setFormData] = useState<FormData>({
         title: "",
@@ -39,8 +46,25 @@ const CreateProduct = () => {
     });
     const [errors, setErrors] = useState<FormErrors>({});
     
-    const { mutate: createProduct, isPending } = useCreateProduct();
+    const { mutate: createProduct, isPending: isCreating } = useCreateProduct();
+    const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct();
     const { data: categories, isLoading: categoriesLoading } = useCategories();
+    
+    const isPending = isCreating || isUpdating;
+
+    useEffect(() => {
+        if (product) {
+            setFormData({
+                title: product.title,
+                price: product.price.toString(),
+                description: product.description,
+                category: product.category,
+                image: product.image,
+                rate: product.rating.rate.toString(),
+                count: product.rating.count.toString()
+            });
+        }
+    }, [product]);
 
     const validateForm = (): boolean => {
         const newErrors: FormErrors = {};
@@ -110,34 +134,56 @@ const CreateProduct = () => {
         }
 
         try {
-            const productData: CreateProductData = {
-                title: formData.title.trim(),
-                price: Number(formData.price),
-                description: formData.description.trim(),
-                category: formData.category,
-                image: formData.image.trim(),
-                rating: {
-                    rate: Number(formData.rate),
-                    count: Number(formData.count)
-                }
-            };
+            if (isEditMode && product) {
+                const updatedProduct: Item = {
+                    id: product.id,
+                    title: formData.title.trim(),
+                    price: Number(formData.price),
+                    description: formData.description.trim(),
+                    category: formData.category,
+                    image: formData.image.trim(),
+                    rating: {
+                        rate: Number(formData.rate),
+                        count: Number(formData.count)
+                    }
+                };
 
-            createProduct(productData, {
-                onSuccess: () => {
-                    alert('Data added!');
-                    setFormData({
-                        title: "",
-                        price: "",
-                        description: "",
-                        category: "",
-                        image: "",
-                        rate: "",
-                        count: ""
-                    });
-                }
-            });
+                updateProduct(updatedProduct, {
+                    onSuccess: () => {
+                        alert('Product updated successfully!');
+                        navigate('/products');
+                    }
+                });
+            } else {
+                const productData: CreateProductData = {
+                    title: formData.title.trim(),
+                    price: Number(formData.price),
+                    description: formData.description.trim(),
+                    category: formData.category,
+                    image: formData.image.trim(),
+                    rating: {
+                        rate: Number(formData.rate),
+                        count: Number(formData.count)
+                    }
+                };
+
+                createProduct(productData, {
+                    onSuccess: () => {
+                        alert('Product created successfully!');
+                        setFormData({
+                            title: "",
+                            price: "",
+                            description: "",
+                            category: "",
+                            image: "",
+                            rate: "",
+                            count: ""
+                        });
+                    }
+                });
+            }
         } catch (error) {
-            console.error('Error creating product:', error);
+            console.error(`Error ${isEditMode ? 'updating' : 'creating'} product:`, error);
             setErrors({ general: "An unexpected error occurred. Please try again." });
         }
     };
@@ -158,8 +204,8 @@ const CreateProduct = () => {
     return (
         <div className="d-flex justify-content-center align-items-center min-vh-100">
             <div className="card border-0 shadow-lg p-5">
-                <h2 className="fw-bold text-center mb-2">Add New Product</h2>
-                <p className="text-center mb-4">Fill in the details to add a new product to your store</p>
+                <h2 className="fw-bold text-center mb-2">{isEditMode ? 'Edit Product' : 'Add New Product'}</h2>
+                <p className="text-center mb-4">{isEditMode ? 'Update the product details' : 'Fill in the details to add a new product to your store'}</p>
 
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
@@ -301,10 +347,10 @@ const CreateProduct = () => {
                             {isPending ? (
                                 <>
                                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                    Creating Product...
+                                    {isEditMode ? 'Updating Product...' : 'Creating Product...'}
                                 </>
                             ) : (
-                                'Create Product'
+                                isEditMode ? 'Update Product' : 'Create Product'
                             )}
                         </button>
                         
@@ -323,4 +369,4 @@ const CreateProduct = () => {
     );
 };
 
-export default CreateProduct;
+export default CreateOrEditProduct;
