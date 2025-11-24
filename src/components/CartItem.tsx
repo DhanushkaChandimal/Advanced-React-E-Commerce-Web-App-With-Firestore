@@ -3,13 +3,13 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import type React from "react";
 import { useState } from "react";
-import type { CartItem as CartItemType } from "../redux/cartSlice";
+import type { CartItem } from "../types/types";
 import { useDispatch } from "react-redux";
 import { updateQuantity, removeFromCart } from "../redux/cartSlice";
 import ConfirmationModal from "./ConfirmationModal";
 import Container from "react-bootstrap/Container";
 
-const CartItem: React.FC<CartItemType> = (product: CartItemType) => {
+const CartItem: React.FC<CartItem> = (product: CartItem) => {
     const dispatch = useDispatch();
     const [showConfirmModal, setShowConfirmModal] = useState(false);
 

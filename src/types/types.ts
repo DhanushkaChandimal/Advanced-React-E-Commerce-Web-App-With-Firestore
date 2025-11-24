@@ -20,3 +20,15 @@ export interface AuthUser {
 export interface FirestoreConfig {
    maxProductId: number;
 }
+
+export interface CartItem extends Item {
+    quantity: number;
+}
+
+export interface Order {
+   id: string;
+   user: AuthUser;
+   totalItems: number;
+   totalAmount: number;
+   items: CartItem[];
+}
