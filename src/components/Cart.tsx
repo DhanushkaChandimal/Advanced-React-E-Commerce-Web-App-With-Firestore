@@ -11,18 +11,23 @@ import CartItem from './CartItem';
 import ConfirmationModal from './ConfirmationModal';
 import CheckoutSuccessModal from './CheckoutSuccessModal';
 import { clearCart } from '../redux/cartSlice';
+import { useCreateOrder } from '../hooks/useOrder';
+import type { Order } from '../types/types';
+import { auth } from '../lib/firebaseConfig';
 
 const Cart = () => {
     const dispatch = useDispatch();
     const { items, totalItems, totalPrice } = useSelector((state: RootState) => state.cart);
     const [showClearModal, setShowClearModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
-    const [isProcessing, setIsProcessing] = useState(false);
     const [orderDetails, setOrderDetails] = useState({
         totalItems: 0,
         totalAmount: 0,
         orderNumber: ''
     });
+    const currentUser = auth.currentUser;
+
+    const { mutate: createOrder, isPending } = useCreateOrder();
     
     const TAX_RATE = 0.10;
     const taxAmount = totalPrice * TAX_RATE;
@@ -33,18 +38,27 @@ const Cart = () => {
     };
 
     const handleCheckout = async () => {
-        setIsProcessing(true);
-        await new Promise(resolve => setTimeout(resolve, 2000));
         const orderNum = generateOrderNumber();
         setOrderDetails({
             totalItems,
             totalAmount: finalAmount,
             orderNumber: orderNum
         });
-        
-        dispatch(clearCart());
-        setIsProcessing(false);
-        setShowSuccessModal(true);
+
+        const orderData: Order = {
+            id: orderNum,
+            userId: currentUser?.email || '',
+            totalItems: totalItems,
+            totalAmount: finalAmount,
+            items: items,
+        };
+
+        createOrder(orderData, {
+            onSuccess: () => {
+                dispatch(clearCart());
+                setShowSuccessModal(true);
+            }
+        });
     };
 
     return (
@@ -100,9 +114,9 @@ const Cart = () => {
                                         variant="success" 
                                         size="lg"
                                         onClick={handleCheckout}
-                                        disabled={isProcessing}
+                                        disabled={isPending}
                                     >
-                                        {isProcessing ? (
+                                        {isPending ? (
                                             <>
                                                 <Spinner
                                                     as="span"
