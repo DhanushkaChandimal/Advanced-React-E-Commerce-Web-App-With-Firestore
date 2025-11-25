@@ -31,4 +31,5 @@ export interface Order {
    totalItems: number;
    totalAmount: number;
    items: CartItem[];
+   date: Date;
 }

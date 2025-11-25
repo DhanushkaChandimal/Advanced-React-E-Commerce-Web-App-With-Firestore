@@ -51,6 +51,7 @@ const Cart = () => {
             totalItems: totalItems,
             totalAmount: finalAmount,
             items: items,
+            date: new Date(),
         };
 
         createOrder(orderData, {
