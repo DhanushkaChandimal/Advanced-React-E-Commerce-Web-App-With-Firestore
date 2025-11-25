@@ -66,6 +66,9 @@ const AppNavbar = ({ user }: AppNavbarProps) => {
                         <Dropdown.Item href="/profile">
                             User Profile
                         </Dropdown.Item>
+                        <Dropdown.Item href="/orders">
+                            Order History
+                        </Dropdown.Item>
                         <Dropdown.Divider />
                         <Dropdown.Item onClick={handleSignOut} className="text-danger">
                             Sign Out

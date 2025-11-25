@@ -12,6 +12,7 @@ import { auth } from './lib/firebaseConfig'
 import SignIn from './components/SignIn'
 import Register from './components/Register'
 import UserProfile from './components/UserProfile'
+import OrderHistory from './components/OrderHistory'
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -36,6 +37,7 @@ const App = () => {
             <Route path='/create-product' element={<CreateOrEditProduct/>}/>
             <Route path='/edit-product/:id' element={<CreateOrEditProduct />}/>
             <Route path='/profile' element={<UserProfile user={user}/>}/>
+            <Route path='/orders' element={<OrderHistory/>}/>
           </Routes>
         </div>
       ) : (
