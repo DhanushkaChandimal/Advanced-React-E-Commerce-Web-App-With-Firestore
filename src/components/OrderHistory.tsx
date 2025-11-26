@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import Table from 'react-bootstrap/Table';
+import '../styles/order-history.css'
 
 const OrderHistory = () => {
     const { data: orders } = useGetOrdersById(auth.currentUser?.email || '');
@@ -52,11 +53,18 @@ const OrderHistory = () => {
                                     {order.items.map((item) => (
                                         <tr>
                                             <td>
-                                                {item.title}
+                                                <div className="d-flex align-items-center">
+                                                    <img
+                                                        src={item.image}
+                                                        alt={item.title}
+                                                        className="order-item-image me-2"
+                                                    />
+                                                    <span>
+                                                        {item.title}
+                                                    </span>
+                                                </div>
                                             </td>
-                                            <td>
-                                                ${item.price.toFixed(2)}
-                                            </td>
+                                            <td>${item.price.toFixed(2)}</td>
                                             <td>
                                                 <Badge bg="secondary">{item.quantity}</Badge>
                                             </td>
