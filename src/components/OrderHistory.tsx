@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase/firestore';
 import { useGetOrdersById } from '../hooks/useOrder';
 import { auth } from '../lib/firebaseConfig';
 import type { Order } from '../types/types';
@@ -9,6 +10,16 @@ import '../styles/order-history.css'
 
 const OrderHistory = () => {
     const { data: orders } = useGetOrdersById(auth.currentUser?.email || '');
+    const formatDate = (date: Timestamp | Date): string => {
+        const dateObj = date instanceof Date ? date : date.toDate();
+        return dateObj.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
 
     return (
         <Container className="py-4">
@@ -19,7 +30,14 @@ const OrderHistory = () => {
                 {orders?.map((order: Order) => (
                     <Card key={order.id} className="mb-4">
                         <Card.Header className="bg-primary text-white">
-                            <strong>Order ID:</strong> {order.id}
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Order ID:</strong> {order.id}
+                                </div>
+                                <Badge bg="light" text="dark">
+                                    {formatDate(order.date)}
+                                </Badge>
+                            </div>
                         </Card.Header>
                         <Card.Body>
                             <div className="row mb-3">
