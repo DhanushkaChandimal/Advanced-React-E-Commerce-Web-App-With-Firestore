@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import Table from 'react-bootstrap/Table';
+import Alert from 'react-bootstrap/Alert';
 import '../styles/order-history.css'
 
 const OrderHistory = () => {
@@ -20,6 +21,17 @@ const OrderHistory = () => {
             minute: '2-digit'
         });
     };
+
+    if (!orders || orders.length === 0) {
+        return (
+            <Container className="py-5 text-center">
+                <Alert variant="info">
+                    <Alert.Heading>No Orders Yet</Alert.Heading>
+                    <p>You haven't placed any orders yet. Start shopping to see your order history here!</p>
+                </Alert>
+            </Container>
+        );
+    }
 
     return (
         <Container className="py-4">
