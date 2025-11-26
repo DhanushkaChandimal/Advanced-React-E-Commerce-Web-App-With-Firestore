@@ -4,6 +4,7 @@ import type { Order } from '../types/types';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
+import Table from 'react-bootstrap/Table';
 
 const OrderHistory = () => {
     const { data: orders } = useGetOrdersById(auth.currentUser?.email || '');
@@ -36,6 +37,36 @@ const OrderHistory = () => {
                                     </p>
                                 </div>
                             </div>
+
+                            <h6 className="fw-bold mt-3 mb-2">Order Items:</h6>
+                            <Table className="mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th className="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {order.items.map((item) => (
+                                        <tr>
+                                            <td>
+                                                {item.title}
+                                            </td>
+                                            <td>
+                                                ${item.price.toFixed(2)}
+                                            </td>
+                                            <td>
+                                                <Badge bg="secondary">{item.quantity}</Badge>
+                                            </td>
+                                            <td className="text-end fw-bold">
+                                                ${(item.price * item.quantity).toFixed(2)}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
                         </Card.Body>
                     </Card>
                 ))}
