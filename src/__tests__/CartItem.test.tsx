@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -44,5 +44,35 @@ describe('CartItem Component', () => {
 
     expect(screen.getByText('+')).toBeInTheDocument();
     expect(screen.getByText('−')).toBeInTheDocument();
+  });
+
+  test('increases quantity when plus button is clicked', () => {
+    const store = configureStore({
+      reducer: {
+        cart: cartReducer,
+      },
+      preloadedState: {
+        cart: {
+          items: [mockProduct],
+          totalItems: mockProduct.quantity,
+          totalPrice: mockProduct.price * mockProduct.quantity
+        }
+      }
+    });
+
+    render(
+      <Provider store={store}>
+        <CartItem {...mockProduct} />
+      </Provider>
+    );
+
+    const plusButton = screen.getByText('+');
+    fireEvent.click(plusButton);
+
+    const state = store.getState();
+    const updatedItem = state.cart.items.find(item => item.id === mockProduct.id);
+    
+    expect(updatedItem?.quantity).toBe(3);
+    expect(state.cart.totalItems).toBe(3);
   });
 });
