@@ -3,6 +3,7 @@
   "compilerOptions": {
     "verbatimModuleSyntax": false,
     "module": "commonjs",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": ["jest", "@testing-library/jest-dom", "node"]
