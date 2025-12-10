@@ -2,6 +2,10 @@
 
 A modern, fully-featured e-commerce web application built with React, TypeScript, Redux, and Firebase/Firestore for backend data management and user authentication.
 
+## 🚀 Live Demo
+
+**[View Live Application](https://advanced-react-e-commerce-web-app-w.vercel.app/)**
+
 ![React](https://img.shields.io/badge/React-19.1.1-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue?logo=typescript)
 ![Redux](https://img.shields.io/badge/Redux%20Toolkit-2.9.2-purple?logo=redux)
@@ -9,6 +13,8 @@ A modern, fully-featured e-commerce web application built with React, TypeScript
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.8-purple?logo=bootstrap)
 ![Firebase](https://img.shields.io/badge/Firebase-11.1.0-orange?logo=firebase)
 ![Vite](https://img.shields.io/badge/Vite-7.1.7-green?logo=vite)
+![Jest](https://img.shields.io/badge/Jest-30.2.0-red?logo=jest)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue?logo=github-actions)
 
 ## 🌟 Features
 
@@ -125,6 +131,27 @@ src/
 
 4. **Open your browser**
    Navigate to `http://localhost:5173` to view the application
+
+## 🧪 Testing
+
+This project includes comprehensive unit and integration tests using Jest and React Testing Library:
+
+- **Unit Tests**: Test individual components (ProductList, CheckoutSuccessModal, CartItem)
+- **Integration Tests**: Test cart functionality with product additions
+- **User Interaction Tests**: Simulate button clicks and state changes
+- **Coverage**: 7 tests across 4 test suites
+
+Run tests:
+```bash
+npm test                    # Run tests in watch mode
+npm test -- --watchAll=false # Run tests once (CI/CD)
+```
+
+## 🚀 Deployment
+
+This application is deployed on Vercel with automatic deployments from the main branch.
+
+**Live URL**: [https://advanced-react-e-commerce-web-app-w.vercel.app/](https://advanced-react-e-commerce-web-app-w.vercel.app/)
 
 ## 📋 Key Components & Features
 
